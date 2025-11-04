@@ -13,8 +13,8 @@ const Header = ({ account, onConnect, onDisconnect, searchQuery, onSearchChange 
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-soft">
-              <span className="text-2xl">📝</span>
+            <div className="w-6 h-6 flex items-center justify-center shadow-soft">
+              <img src="/icon.png" alt="Web3 Notes" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">
@@ -50,7 +50,7 @@ const Header = ({ account, onConnect, onDisconnect, searchQuery, onSearchChange 
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400 hidden sm:flex">
                     {account.slice(0, 6)}...{account.slice(-4)}
                   </span>
                 </div>
