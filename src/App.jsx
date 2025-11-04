@@ -9,6 +9,7 @@ import NoteEditor from "./components/NoteEditor";
 import Modal from "./components/Modal";
 import Button from "./components/Button";
 import Input from "./components/Input";
+import LoadingScreen from "./components/LoadingScreen";
 
 const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
 const contractABI = abiFile.abi;
@@ -28,6 +29,7 @@ function App() {
   const [selectedNote, setSelectedNote] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState('newest'); // 'newest', 'oldest', 'title'
+  const [isInitialLoading, setIsInitialLoading] = useState(false); // For first connection
 
   /**
    * Connect user's MetaMask wallet
@@ -35,13 +37,18 @@ function App() {
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
+        setIsInitialLoading(true);
         const [addr] = await window.ethereum.request({ 
           method: "eth_requestAccounts" 
         });
         setAccount(addr);
+        
+        // Add a natural delay for better UX
+        await new Promise(resolve => setTimeout(resolve, 800));
       } catch (error) {
         console.error("Failed to connect wallet:", error);
         alert("Failed to connect wallet. Please try again.");
+        setIsInitialLoading(false);
       }
     } else {
       alert("Please install MetaMask to use this app!");
@@ -66,11 +73,23 @@ function App() {
    */
   useEffect(() => {
     if (account) {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      provider.getSigner().then((signer) => {
-        const instance = new ethers.Contract(contractAddress, contractABI, signer);
-        setContract(instance);
-      });
+      const initializeContract = async () => {
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner();
+          const instance = new ethers.Contract(contractAddress, contractABI, signer);
+          setContract(instance);
+          
+          // Add delay for natural transition
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (error) {
+          console.error("Failed to initialize contract:", error);
+        } finally {
+          setIsInitialLoading(false);
+        }
+      };
+      
+      initializeContract();
     }
   }, [account]);
 
@@ -178,6 +197,12 @@ const loadNotes = async () => {
         {/* Show WalletConnect page if not connected */}
         {!account ? (
           <WalletConnect onConnect={connectWallet} />
+        ) : isInitialLoading ? (
+          /* Loading screen after wallet connection */
+          <LoadingScreen 
+            message="Connecting to Blockchain" 
+            subtitle="Initializing your notes..."
+          />
         ) : (
           <>
             {/* Header */}

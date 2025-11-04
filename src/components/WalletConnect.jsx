@@ -34,8 +34,8 @@ const WalletConnect = ({ onConnect }) => {
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in">
           {/* Logo */}
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-3xl shadow-large mb-6">
-            <span className="text-5xl">📝</span>
+          <div className="inline-flex items-center justify-center w-20 h-20 shadow-large mb-6">
+            <img src="/icon.png" alt="" />
           </div>
 
           {/* Title */}
